@@ -36,13 +36,42 @@ class _PemainFormPageState extends State<PemainFormPage> {
     }
   }
 
-  Future<void> _pickImage() async {
-    final picked = await ImagePicker().pickImage(source: ImageSource.gallery);
+  Future<void> _pickImage(ImageSource source) async {
+    final picked = await ImagePicker().pickImage(source: source);
     if (picked != null) {
       setState(() {
         _image = File(picked.path);
       });
     }
+  }
+
+  void _showImageSourceDialog() {
+    showModalBottomSheet(
+      context: context,
+      builder: (_) => Container(
+        color: Colors.black,
+        child: Wrap(
+          children: [
+            ListTile(
+              leading: const Icon(Icons.camera, color: Colors.red),
+              title: const Text('Kamera', style: TextStyle(color: Colors.white)),
+              onTap: () {
+                Navigator.pop(context);
+                _pickImage(ImageSource.camera);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.photo_library, color: Colors.red),
+              title: const Text('Galeri', style: TextStyle(color: Colors.white)),
+              onTap: () {
+                Navigator.pop(context);
+                _pickImage(ImageSource.gallery);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   Future<String?> _uploadImage(File imageFile) async {
@@ -168,9 +197,9 @@ class _PemainFormPageState extends State<PemainFormPage> {
               ),
               const SizedBox(height: 20),
               ElevatedButton.icon(
-                onPressed: _pickImage,
-                icon: const Icon(Icons.photo, color: Colors.white),
-                label: const Text('Pilih Foto', style: TextStyle(color: Colors.white)),
+                onPressed: _showImageSourceDialog,
+                icon: const Icon(Icons.photo_camera, color: Colors.white),
+                label: const Text('Ambil/Galeri Foto', style: TextStyle(color: Colors.white)),
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
               ),
               const SizedBox(height: 16),
